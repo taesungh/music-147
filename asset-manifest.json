@@ -1,12 +1,20 @@
 {
   "files": {
-    "main.css": "/music-147/static/css/main.4c0b01c8.css",
-    "main.js": "/music-147/static/js/main.bca0e65d.js",
+    "main.css": "/music-147/static/css/main.a4949e8d.css",
+    "main.js": "/music-147/static/js/main.bff7fa76.js",
     "static/js/27.ac600882.chunk.js": "/music-147/static/js/27.ac600882.chunk.js",
+    "static/media/s5.m4a": "/music-147/static/media/s5.059ff1be5447233ac38a.m4a",
+    "static/media/s6.m4a": "/music-147/static/media/s6.f70dc34637c113ca7c87.m4a",
+    "static/media/s4.m4a": "/music-147/static/media/s4.acbcbe6a368eb45f9fb7.m4a",
+    "static/media/s8.m4a": "/music-147/static/media/s8.351a45338fdff070eb49.m4a",
+    "static/media/s3.m4a": "/music-147/static/media/s3.7981f20124c4c070d6d1.m4a",
+    "static/media/s1.m4a": "/music-147/static/media/s1.1f1a64768ec3397ef078.m4a",
+    "static/media/s2.m4a": "/music-147/static/media/s2.0b31cf8f413c2c0dff3b.m4a",
+    "static/media/s7.m4a": "/music-147/static/media/s7.94c0c55435b49477951c.m4a",
     "index.html": "/music-147/index.html"
   },
   "entrypoints": [
-    "static/css/main.4c0b01c8.css",
-    "static/js/main.bca0e65d.js"
+    "static/css/main.a4949e8d.css",
+    "static/js/main.bff7fa76.js"
   ]
 }
