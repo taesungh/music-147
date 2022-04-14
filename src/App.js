@@ -1,3 +1,6 @@
+import { Route, Routes } from "react-router-dom";
+
+import { SoundFileExploration } from "./assignments";
 import { Home } from "./pages";
 import "./App.css";
 
@@ -9,7 +12,10 @@ function App() {
         <br />
         MUSIC 147 Portfolio
       </header>
-      <Home />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/sound-file-exploration" element={<SoundFileExploration />} />
+      </Routes>
     </div>
   );
 }

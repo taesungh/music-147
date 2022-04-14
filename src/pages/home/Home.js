@@ -1,21 +1,31 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="container">
+    <div className="container home">
       <h1>Welcome</h1>
+      <p>Welcome to my portfolio for MUSIC 147 (Computer Music Programming), Spring 2022.</p>
+
+      <h2>Programming Assignment 2: Sound File Exploration</h2>
       <p>
-        Welcome to my portfolio for MUSIC 147 (Computer Music Programming),
-        Spring 2022.
+        Similar to Assignment 1, this assignment took prerecorded sound samples to trigger upon user
+        input, but this was implemented in JavaScript instead of Max. For each sample, the sound
+        data was stored in an <code>AudioBuffer</code> object which could be used as the buffer in
+        an <code>AudioBufferSourceNode</code> object. Source node objects are played upon changes to
+        the text input. The character code of the text determines which sample is played.
       </p>
+      <p>
+        View Program 2: <Link to="/sound-file-exploration">Sound File Exploration</Link>
+      </p>
+
       <h2>Programming Assignment 1: Typing Sounds</h2>
       <p>
-        This assignment consisted of creating a Max patch where sounds are
-        played when typing on the computer keyboard. A subpatch was created with
-        an <code>sfplay~</code> object that plays prerecorded sound files.
-        Instances of this subpatch were loaded using the <code>poly~</code>{" "}
-        object, and instances were triggered by messages sent from a{" "}
-        <code>key</code> object which detects keystrokes.
+        This assignment consisted of creating a Max patch where sounds are played when typing on the
+        computer keyboard. A subpatch was created with an <code>sfplay~</code> object that plays
+        prerecorded sound files. Instances of this subpatch were loaded using the <code>poly~</code>{" "}
+        object, and instances were triggered by messages sent from a <code>key</code> object which
+        detects keystrokes.
       </p>
       <p>
         View{" "}
