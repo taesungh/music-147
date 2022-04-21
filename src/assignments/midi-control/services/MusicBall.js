@@ -1,4 +1,6 @@
-import { Bodies, Composite, Engine, Render, Runner } from "matter-js";
+import { Bodies, Composite, Engine, Events, Render, Runner } from "matter-js";
+
+import { playNote } from "./audio-handler";
 import midiHandler from "./midi-handler";
 
 class MusicBall {
@@ -8,6 +10,7 @@ class MusicBall {
       canvas: canvas,
       engine: this._engine,
       options: {
+        wireframes: false,
         pixelRatio: "auto",
       },
     });
@@ -15,10 +18,24 @@ class MusicBall {
     await midiHandler.initializeMidi();
     midiHandler.registerMidiHandler(this.processMidi.bind(this));
 
-    const bumperLeft = Bodies.rectangle(370, 0, 600, 100, { angle: -0.2, isStatic: true });
-    const bumperRight = Bodies.rectangle(-370, 0, 600, 100, { angle: 0.2, isStatic: true });
+    const bumperLeft = Bodies.rectangle(400, -150, 800, 100, {
+      angle: -0.6,
+      isStatic: true,
+      render: { strokeStyle: "#fff", lineWidth: 4 },
+    });
+    const bumperMid = Bodies.rectangle(0, -300, 150, 150, {
+      angle: Math.PI / 4,
+      isStatic: true,
+      render: { strokeStyle: "#fff", lineWidth: 4 },
+    });
+    const bumperRight = Bodies.rectangle(-400, -150, 800, 100, {
+      angle: 0.6,
+      isStatic: true,
+      render: { strokeStyle: "#fff", lineWidth: 4 },
+    });
 
-    Composite.add(this._engine.world, [bumperLeft, bumperRight]);
+    // add all of the bodies to the world
+    Composite.add(this._engine.world, [bumperLeft, bumperMid, bumperRight]);
 
     this._render.options.hasBounds = true;
     this._resizeWindow();
@@ -30,6 +47,7 @@ class MusicBall {
     this._runner = Runner.create();
     // run the engine
     Runner.run(this._runner, this._engine);
+    this.startCollisionHandler();
   }
 
   processMidi(message) {
@@ -42,18 +60,27 @@ class MusicBall {
       this._addBall(data1, data2);
     } else if (type === 0b1000) {
       // note off
-      const note = data1;
-      const velocity = data2;
     } else if (type === 0b1011) {
       // control change
-      const num = data1;
-      const value = data2;
-      console.log("cc", num, value);
+      this._handleControlChange(data1, data2);
     } else if (type === 0b1110) {
       // pitch bend
-      const amount = data1;
-      console.log("pitch bend", amount);
+      this._handlePitchBend(data2);
     }
+  }
+
+  startCollisionHandler() {
+    Events.on(this._engine, "collisionStart", (event) => {
+      event.pairs.forEach(({ bodyA, bodyB }) => {
+        // console.log("collision between", bodyA, bodyB);
+        if (bodyA.entityType === "ball") {
+          playNote(bodyA.music.note, bodyA.music.velocity);
+        }
+        if (bodyB.entityType === "ball") {
+          playNote(bodyB.music.note, bodyB.music.velocity);
+        }
+      });
+    });
   }
 
   _enableWindowResizing() {
@@ -87,10 +114,45 @@ class MusicBall {
   }
 
   _addBall(note, velocity) {
-    const size = 10 + velocity / 5;
-    const x = -200 + 400 * Math.random();
-    const ball = Bodies.circle(x, -600, size);
+    const pitch = note % 12;
+    const octave = note / 12;
+    const size = 5 + velocity / 8;
+    const rw = this._render.options.width;
+    const x = (rw * (note - 60)) / 100;
+
+    const ball = Bodies.circle(x, -600, size, {
+      render: {
+        fillStyle: `hsl(${pitch * 30}, 60%, ${30 + octave * 5}%)`,
+      },
+      restitution: 0.95,
+      entityType: "ball",
+      music: {
+        note,
+        velocity,
+      },
+    });
     Composite.add(this._engine.world, ball);
+
+    // remove balls out of view
+    Composite.remove(
+      this._engine.world,
+      Composite.allBodies(this._engine.world).filter((b) => b.position.y > 100)
+    );
+  }
+
+  _handleControlChange(num, value) {
+    if (num === 1) {
+      // mod wheel
+      this._engine.timing.timeScale = 1 - value / 128;
+    } else if (num === 64) {
+      // sustain pedal
+      this._engine.gravity.y = 1 - value / 64;
+    }
+  }
+
+  _handlePitchBend(amount) {
+    // add sideways acceleration
+    this._engine.gravity.x = (amount - 64) / 64;
   }
 }
 
