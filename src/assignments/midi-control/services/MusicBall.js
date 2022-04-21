@@ -53,7 +53,7 @@ class MusicBall {
   processMidi(message) {
     const [status, data1, data2] = message.data;
     const type = status >> 4;
-    const channel = 0x0f & status;
+    // const channel = 0x0f & status;
 
     if (type === 0b1001) {
       // note on
