@@ -7,6 +7,18 @@ function Home() {
       <h1>Welcome</h1>
       <p>Welcome to my portfolio for MUSIC 147 (Computer Music Programming), Spring 2022.</p>
 
+      <h2>Programming Assignment 3: MIDI Control</h2>
+      <p>
+        This assignment consisted of using MIDI controller data to run a demo involving bouncing
+        balls that produce sounds upon collision. Playing notes on a MIDI keyboard creates balls of
+        a specific pitch and size, and other MIDI input signals such as the pitch bend wheel,
+        modulation wheel, and sustain pedal can be used to adjust other parameters of the simulation
+        including the gravity and time scale.
+      </p>
+      <p>
+        View Program 3: <Link to="/midi-control">Music Ball</Link>
+      </p>
+
       <h2>Programming Assignment 2: Sound File Exploration</h2>
       <p>
         Similar to Assignment 1, this assignment took prerecorded sound samples to trigger upon user
