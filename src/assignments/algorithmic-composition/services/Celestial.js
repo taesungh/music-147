@@ -1,4 +1,5 @@
-import { Body, Bodies, Composite, Engine, Events, Mouse, Render, Runner, Vector } from "matter-js";
+import { Body, Bodies, Composite, Engine, Events, Render, Runner, Vector } from "matter-js";
+import { Mouse, MouseConstraint } from "matter-js";
 import { playNote } from "./celesta";
 
 // gravitational constant
@@ -48,8 +49,13 @@ class Celestial {
 
     // set up mouse
     this._mouse = Mouse.create(canvas);
-    // Events.on(this._mouse, "mousedown", this.processClick.bind(this));
-    this._mouse.element.addEventListener("mousedown", this.processClick.bind(this));
+    // fix scaling issues
+    this._mouse.pixelRatio = this._render.options.pixelRatio;
+    // MouseConstraint supports touch input unlike Mouse
+    this._mouseConstraint = MouseConstraint.create(this._engine, {
+      mouse: this._mouse,
+    });
+    Events.on(this._mouseConstraint, "mousedown", this.processClick.bind(this));
 
     // set up viewport
     Render.lookAt(this._render, this._attractor, { x: 500, y: 500 }, true);
@@ -87,7 +93,10 @@ class Celestial {
   }
 
   processClick(event) {
-    this._addPlanet(this._mouse.position);
+    // planet must spawn outside of attractor
+    if (Vector.magnitude(this._mouse.position) > this._attractor.circleRadius + 5) {
+      this._addPlanet(this._mouse.position);
+    }
   }
 
   processGravity() {
@@ -117,7 +126,7 @@ class Celestial {
   }
 
   _resizeWindow() {
-    let vw = window.innerWidth;
+    let vw = document.body.clientWidth;
 
     // fit within container
     let width = Math.min(_CONTAINER_MAX_WIDTH, vw) - 2 * _CONTAINER_PADDING;
@@ -128,6 +137,10 @@ class Celestial {
 
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
+
+    // enforce minimum padding. may have performance hit for large pixelRatio (e.g. 3 on mobile)
+    width = Math.max(800, width);
+    height = Math.max(800, height);
 
     canvas.width = width * pixelRatio;
     canvas.height = height * pixelRatio;
