@@ -76,6 +76,12 @@ class Celestial {
         } else if (bodyB === this._needle) {
           playNote(bodyA.music.note, bodyA.music.velocity);
         }
+
+        if (bodyA === this._attractor) {
+          Composite.remove(this._engine.world, bodyB);
+        } else if (bodyB === this._attractor) {
+          Composite.remove(this._engine.world, bodyA);
+        }
       });
     });
   }
@@ -140,20 +146,25 @@ class Celestial {
   }
 
   _addPlanet(position, options) {
+    const reverse = Math.random() < 0.05;
+
     const size = 3 + 3 * Math.random();
     const pitch = Math.round(40 + (80 * position.x) / 1000);
     const octave = Math.floor(pitch / 12);
 
     const dist = Vector.sub(this._attractor.position, position);
     // v = sqrt(GM/R) for circular orbit
-    const velocity = Vector.mult(
-      Vector.perp(Vector.normalise(dist)),
+    const circularVelocity = Vector.mult(
+      Vector.perp(Vector.normalise(dist), reverse),
       Math.sqrt((G * this._attractor.mass) / Vector.magnitude(dist))
     );
+    const perturbationVelocity = Vector.mult(Vector.normalise(dist), Math.random() / 15);
+    const velocity = Vector.add(circularVelocity, perturbationVelocity);
 
     const planet = Bodies.circle(position.x, position.y, size, {
       density: 20,
-      frictionAir: 0,
+      frictionAir: 0.0001,
+      friction: 0.01,
       render: {
         fillStyle: `hsl(${pitch * 30}, 65%, ${40 + octave * 5}%)`,
       },
