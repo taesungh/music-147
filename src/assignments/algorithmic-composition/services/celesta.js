@@ -19,3 +19,14 @@ export function playNote(note, velocity) {
 
   sampler.triggerAttackRelease(frequency, duration, Tone.now(), amplitude);
 }
+
+const player = new Tone.Player(celesta61);
+player.reverse = true;
+player.playbackRate = 16;
+
+const pitchShift = new Tone.PitchShift(-24).toDestination();
+player.fan(pitchShift);
+
+export function playWisp() {
+  player.start();
+}

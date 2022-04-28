@@ -1,6 +1,6 @@
 import { Body, Bodies, Composite, Engine, Events, Render, Runner, Vector } from "matter-js";
 import { Mouse, MouseConstraint } from "matter-js";
-import { playNote } from "./celesta";
+import { playNote, playWisp } from "./celesta";
 
 // gravitational constant
 const G = 7e-8;
@@ -85,8 +85,10 @@ class Celestial {
 
         if (bodyA === this._attractor) {
           Composite.remove(this._engine.world, bodyB);
+          playWisp();
         } else if (bodyB === this._attractor) {
           Composite.remove(this._engine.world, bodyA);
+          playWisp();
         }
       });
     });
