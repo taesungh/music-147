@@ -1,5 +1,7 @@
-import { Bodies, Composite, Engine, Events, Mouse, Render, Runner } from "matter-js";
+import { Body, Bodies, Composite, Engine, Events, Mouse, Render, Runner, Vector } from "matter-js";
 
+// gravitational constant
+const G = 7e-8;
 // from global styles for .container
 const _CONTAINER_MAX_WIDTH = 1200;
 const _CONTAINER_PADDING = 15;
@@ -21,9 +23,8 @@ class Celestial {
     });
 
     // the central "sun" of the system
-    const attractor = Bodies.circle(0, 0, 100, {
-      isStatic: true,
-      density: 500,
+    this._attractor = Bodies.circle(0, 0, 80, {
+      density: 12000,
       render: {
         strokeStyle: "#fff",
         lineWidth: 3,
@@ -32,16 +33,17 @@ class Celestial {
     });
 
     // reference bar for producing sounds
-    const needle = Bodies.rectangle(500, 0, 800, 2, {
+    this._needle = Bodies.rectangle(480, 0, 800, 2, {
       isStatic: true,
+      isSensor: true,
       mass: 0,
       render: {
         fillStyle: "rgba(240, 240, 240, 0.2)",
       },
     });
 
-    // add all of the bodies to the world
-    Composite.add(this._engine.world, [attractor, needle]);
+    // add initial bodies to the world
+    Composite.add(this._engine.world, [this._attractor, this._needle]);
 
     // set up mouse
     this._mouse = Mouse.create(canvas);
@@ -49,7 +51,7 @@ class Celestial {
     this._mouse.element.addEventListener("mousedown", this.processClick.bind(this));
 
     // set up viewport
-    Render.lookAt(this._render, attractor, { x: 500, y: 500 }, true);
+    Render.lookAt(this._render, this._attractor, { x: 500, y: 500 }, true);
     this._render.options.hasBounds = true;
     this._resizeWindow();
     this._enableWindowResizing();
@@ -77,7 +79,27 @@ class Celestial {
     this._addPlanet(this._mouse.position);
   }
 
-  processGravity() {}
+  processGravity() {
+    Composite.allBodies(this._engine.world).forEach((b) => {
+      // do not apply to static bodies
+      if (b.isStatic) {
+        return;
+      }
+      Composite.allBodies(this._engine.world).forEach((other) => {
+        // do not apply to self and static bodies
+        if (b === other || other.isStatic) {
+          return;
+        }
+        const dist = Vector.sub(other.position, b.position);
+        // inverse-square gravitational force, based on Newton's law of universal gravitation
+        const force = Vector.mult(
+          Vector.normalise(dist),
+          (G * b.mass * other.mass) / Vector.magnitudeSquared(dist)
+        );
+        Body.applyForce(b, other.position, force);
+      });
+    });
+  }
 
   _enableWindowResizing() {
     window.addEventListener("resize", this._resizeWindow.bind(this));
@@ -112,7 +134,25 @@ class Celestial {
     Mouse.setOffset(this._mouse, this._render.bounds.min);
   }
 
-  _addPlanet(position, options) {}
+  _addPlanet(position, options) {
+    const size = 4;
+
+    const dist = Vector.sub(this._attractor.position, position);
+    // v = sqrt(GM/R) for circular orbit
+    const velocity = Vector.mult(
+      Vector.perp(Vector.normalise(dist)),
+      Math.sqrt((G * this._attractor.mass) / Vector.magnitude(dist))
+    );
+
+    const planet = Bodies.circle(position.x, position.y, size, {
+      density: 20,
+      frictionAir: 0,
+      entityType: "planet",
+    });
+    // velocity must be set after body is created and be scaled by simulation time step
+    Body.setVelocity(planet, Vector.mult(velocity, this._runner.delta));
+    Composite.add(this._engine.world, planet);
+  }
 }
 
 const celestial = new Celestial();
