@@ -7,6 +7,16 @@ function Home() {
       <h1>Welcome</h1>
       <p>Welcome to my portfolio for MUSIC 147 (Computer Music Programming), Spring 2022.</p>
 
+      <h2>Programming Assignment 4: Algorithmic Composition</h2>
+      <p>
+        Similar to Assignment 3, this assignment uses a physics engine to simulate objects in a
+        celestial universe. Planets orbit around a center based on models of gravity and play notes
+        when crossing a reference line. Several random parameters also affect the simulation.
+      </p>
+      <p>
+        View Program 4: <Link to="/algorithmic-composition">Celestial</Link>
+      </p>
+
       <h2>Programming Assignment 3: MIDI Control</h2>
       <p>
         This assignment consisted of using MIDI controller data to run a demo involving bouncing
