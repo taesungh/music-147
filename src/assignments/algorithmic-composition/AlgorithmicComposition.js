@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import * as Tone from "tone";
 
 import celestial from "./services/Celestial";
 
@@ -7,6 +8,7 @@ function AlgorithmicComposition() {
   const canvas = useRef();
 
   const startEngine = () => {
+    Tone.start();
     celestial.createWorld(canvas.current);
     setRunning(true);
   };

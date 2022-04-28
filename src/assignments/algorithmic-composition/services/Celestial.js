@@ -1,4 +1,5 @@
 import { Body, Bodies, Composite, Engine, Events, Mouse, Render, Runner, Vector } from "matter-js";
+import { playNote } from "./celesta";
 
 // gravitational constant
 const G = 7e-8;
@@ -33,12 +34,12 @@ class Celestial {
     });
 
     // reference bar for producing sounds
-    this._needle = Bodies.rectangle(480, 0, 800, 2, {
+    this._needle = Bodies.rectangle(580, 0, 1000, 2, {
       isStatic: true,
       isSensor: true,
       mass: 0,
       render: {
-        fillStyle: "rgba(240, 240, 240, 0.2)",
+        fillStyle: "rgba(240, 240, 240, 0.4)",
       },
     });
 
@@ -70,7 +71,11 @@ class Celestial {
   startCollisionHandler() {
     Events.on(this._engine, "collisionStart", (event) => {
       event.pairs.forEach(({ bodyA, bodyB }) => {
-        // console.log("collision between", bodyA, bodyB);
+        if (bodyA === this._needle) {
+          playNote(bodyB.music.note, bodyB.music.velocity);
+        } else if (bodyB === this._needle) {
+          playNote(bodyA.music.note, bodyA.music.velocity);
+        }
       });
     });
   }
@@ -135,7 +140,9 @@ class Celestial {
   }
 
   _addPlanet(position, options) {
-    const size = 4;
+    const size = 3 + 3 * Math.random();
+    const pitch = Math.round(40 + (80 * position.x) / 1000);
+    const octave = Math.floor(pitch / 12);
 
     const dist = Vector.sub(this._attractor.position, position);
     // v = sqrt(GM/R) for circular orbit
@@ -147,7 +154,14 @@ class Celestial {
     const planet = Bodies.circle(position.x, position.y, size, {
       density: 20,
       frictionAir: 0,
+      render: {
+        fillStyle: `hsl(${pitch * 30}, 65%, ${40 + octave * 5}%)`,
+      },
       entityType: "planet",
+      music: {
+        note: pitch,
+        velocity: 20 * size,
+      },
     });
     // velocity must be set after body is created and be scaled by simulation time step
     Body.setVelocity(planet, Vector.mult(velocity, this._runner.delta));
