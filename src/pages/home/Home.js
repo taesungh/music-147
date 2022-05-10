@@ -7,6 +7,12 @@ function Home() {
       <h1>Welcome</h1>
       <p>Welcome to my portfolio for MUSIC 147 (Computer Music Programming), Spring 2022.</p>
 
+      <h2>Project Proposal</h2>
+      <p>
+        To prepare for the final programming assignment, a{" "}
+        <Link to="/project-proposal">project proposal</Link> was drafted.
+      </p>
+
       <h2>Programming Assignment 4: Algorithmic Composition</h2>
       <p>
         Similar to Assignment 3, this assignment uses a physics engine to simulate objects in a

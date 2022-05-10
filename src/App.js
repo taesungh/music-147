@@ -1,6 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 
-import { AlgorithmicComposition, MidiControl, SoundFileExploration } from "./assignments";
+import {
+  AlgorithmicComposition,
+  MidiControl,
+  ProjectProposal,
+  SoundFileExploration,
+} from "./assignments";
 import { Home } from "./pages";
 import "./App.css";
 
@@ -17,6 +22,7 @@ function App() {
         <Route path="/sound-file-exploration" element={<SoundFileExploration />} />
         <Route path="/midi-control" element={<MidiControl />} />
         <Route path="/algorithmic-composition" element={<AlgorithmicComposition />} />
+        <Route path="/project-proposal" element={<ProjectProposal />} />
       </Routes>
     </div>
   );
