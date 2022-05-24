@@ -7,6 +7,12 @@ function Home() {
       <h1>Welcome</h1>
       <p>Welcome to my portfolio for MUSIC 147 (Computer Music Programming), Spring 2022.</p>
 
+      <h2>Progress Report</h2>
+      <p>
+        Work done so far on the final project is described in a{" "}
+        <Link to="/progress-report">progress report</Link>.
+      </p>
+
       <h2>Project Proposal</h2>
       <p>
         To prepare for the final programming assignment, a{" "}
