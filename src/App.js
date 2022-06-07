@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import {
   AlgorithmicComposition,
+  FinalProject,
   MidiControl,
   ProgressReport,
   ProjectProposal,
@@ -25,6 +26,7 @@ function App() {
         <Route path="/algorithmic-composition" element={<AlgorithmicComposition />} />
         <Route path="/project-proposal" element={<ProjectProposal />} />
         <Route path="/progress-report" element={<ProgressReport />} />
+        <Route path="/final-project" element={<FinalProject />} />
       </Routes>
     </div>
   );
