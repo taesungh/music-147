@@ -13,7 +13,13 @@ function FinalProject() {
         synthesizers and note data rather than prerecorded files.
       </p>
       <p>
-        View <a href="https://admirals-dev-temp.herokuapp.com/">live demo</a>.
+        View <a href="https://admirals-dev-temp.herokuapp.com/">live demo</a>. Enter any username
+        and room. The game is usually played in teams of three, but you can select a role and click
+        Ready and choose the option to play with computer teammates. Controls for each role are
+        shown by clicking the question mark icon next to the name of the role.
+      </p>
+      <p>
+        View <a href="https://admirals-dev-temp.herokuapp.com/music-test">test interface</a>.
       </p>
       <p>
         View{" "}
